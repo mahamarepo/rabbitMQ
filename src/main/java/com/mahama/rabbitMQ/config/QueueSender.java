@@ -1,12 +1,15 @@
 package com.mahama.rabbitMQ.config;
 
 import com.mahama.rabbitMQ.enumeration.QueueExchangeList;
+import com.mahama.rabbitMQ.enumeration.QueueFactory;
 import com.mahama.rabbitMQ.enumeration.QueueList_Rabbit;
 import com.mahama.rabbitMQ.enumeration.QueueRoutingKeyList;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.amqp.SimpleRabbitListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,6 +19,17 @@ import java.util.Map;
 
 @Configuration("QueueSender_MQ")
 public class QueueSender {
+    /**
+     * 连接工厂
+     */
+    @Bean(QueueFactory.PREFETCH_COUNT_FACTORY_50)
+    public SimpleRabbitListenerContainerFactory PREFETCH_COUNT_FACTORY_50(SimpleRabbitListenerContainerFactoryConfigurer configurer, ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setPrefetchCount(50);
+        configurer.configure(factory, connectionFactory);
+        return factory;
+    }
+
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
